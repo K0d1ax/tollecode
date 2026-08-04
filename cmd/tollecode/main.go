@@ -316,6 +316,7 @@ func resolveProviderSpec(spec string) string {
 	specToType := map[string]string{
 		"anthropic":    "anthropic",
 		"openai":       "openai",
+		"google":       "google",
 		"ollama":       "ollama",
 		"ollama:local": "ollama",
 		"ollama:cloud": "ollama-cloud",

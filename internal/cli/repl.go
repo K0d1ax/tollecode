@@ -1068,6 +1068,7 @@ func providerTypeLabel(ptype string) string {
 	labels := map[string]string{
 		"anthropic":    "anthropic",
 		"openai":       "openai",
+		"google":       "google gemini",
 		"ollama":       "ollama local",
 		"ollama-cloud": "ollama cloud",
 		"custom":       "custom",

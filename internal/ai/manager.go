@@ -200,7 +200,7 @@ func (m *Manager) ResolveProviderID(providerOrType string) (string, bool) {
 
 // BestProvider returns the best available provider ID and its default model.
 // Priority: preferProvider (if set and available) > anthropic > openai >
-// ollama-cloud > ollama > custom > other, alphabetical within a tier.
+// google > ollama-cloud > ollama > custom > other, alphabetical within a tier.
 // Within the same tier, providers with a non-empty default model are
 // preferred over those without one, so we never pick an Ollama instance
 // that has no model configured.
@@ -235,14 +235,16 @@ func (m *Manager) BestProvider(preferProvider, preferModel string) (provider, mo
 			return 0
 		case "openai":
 			return 1
-		case "ollama-cloud":
+		case "google":
 			return 2
-		case "ollama":
+		case "ollama-cloud":
 			return 3
-		case "custom":
+		case "ollama":
 			return 4
+		case "custom":
+			return 5
 		}
-		return 5
+		return 6
 	}
 
 	best := ""
@@ -507,6 +509,8 @@ func buildRawAdapter(cfg ProviderConfig) Provider {
 		return NewAnthropicProvider(cfg.APIKey)
 	case "openai":
 		return NewOpenAIProvider(cfg.APIKey, cfg.Endpoint)
+	case "google":
+		return NewGoogleProvider(cfg.APIKey, cfg.Endpoint)
 	case "ollama":
 		return NewOllamaProvider(cfg.Endpoint, "")
 	case "ollama-cloud":

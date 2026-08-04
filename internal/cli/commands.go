@@ -1103,6 +1103,7 @@ func handleSkillCmd(workspace, sessionID, arg string) {
 var providerTypes = []struct{ id, label string }{
 	{"anthropic", "Anthropic Claude      api.anthropic.com"},
 	{"openai", "OpenAI                api.openai.com (or compatible)"},
+	{"google", "Google Gemini         generativelanguage.googleapis.com"},
 	{"ollama", "Ollama local          localhost:11434"},
 	{"ollama-cloud", "Ollama cloud          custom endpoint + API key"},
 	{"custom", "Custom                any OpenAI-compatible endpoint"},
@@ -1198,7 +1199,7 @@ func addProvider(reader *bufio.Reader, cfgs []map[string]any) {
 		"models":  []any{},
 	}
 
-	needsKey := map[string]bool{"anthropic": true, "openai": true, "ollama-cloud": true, "custom": true}
+	needsKey := map[string]bool{"anthropic": true, "openai": true, "google": true, "ollama-cloud": true, "custom": true}
 	needsEndpoint := map[string]bool{"ollama": true, "ollama-cloud": true, "custom": true}
 
 	if needsEndpoint[ptype] {
@@ -1231,9 +1232,22 @@ func addProvider(reader *bufio.Reader, cfgs []map[string]any) {
 		p["apiKey"] = key
 	}
 
-	fmt.Printf("  Default model (optional): ")
+	// Google Gemini: prefill the current lineup with gemini-3.5-flash as default
+	// so an empty answer still yields a usable provider.
+	defaultModel := ""
+	if ptype == "google" {
+		defaultModel = "gemini-3.5-flash"
+	}
+	prompt := "  Default model (optional)"
+	if defaultModel != "" {
+		prompt += " [" + defaultModel + "]"
+	}
+	fmt.Printf("%s: ", prompt)
 	mdl, _ := reader.ReadString('\n')
 	mdl = strings.TrimSpace(mdl)
+	if mdl == "" {
+		mdl = defaultModel
+	}
 	if mdl != "" {
 		p["models"] = []any{map[string]any{"id": mdl, "name": mdl, "isDefault": true}}
 		p["defaultModel"] = mdl

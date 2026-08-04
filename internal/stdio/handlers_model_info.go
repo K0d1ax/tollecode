@@ -42,6 +42,8 @@ func resolveModelInfo(provider ai.Provider, model string) ai.ModelInfo {
 		return p.GetModelInfo(ctx, model)
 	case *ai.AnthropicProvider:
 		return ai.AnthropicModelInfo(model)
+	case *ai.GoogleProvider:
+		return ai.GoogleModelInfo(model)
 	case *ai.OpenAIProvider:
 		return ai.OpenAIModelInfo(model)
 	default:

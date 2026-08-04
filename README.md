@@ -16,12 +16,20 @@ TolleCode is not tied to one vendor. Every provider implements the same
 |-----------|----------------------------------------------------------|
 | Anthropic | Claude models                                            |
 | OpenAI    | GPT models, plus any OpenAI-compatible endpoint          |
+| Google    | Gemini models (Interactions API)                         |
 | Ollama    | Local models — no API key, nothing leaves your machine   |
 
 ```sh
 tollecode configure set-key anthropic sk-...
-tollecode launch ollama --model qwen2.5-coder   # fully local
+tollecode configure set-key google $GEMINI_API_KEY   # key from Google AI Studio
+tollecode launch google --model gemini-3.5-flash
 ```
+
+**Google Gemini note:** Gemini conversations run in stateful mode
+(`store=true`), so interactions are retained by Google server-side for
+55 days (paid tier) or 1 day (free tier). Conversations were already sent to
+Google's API — retention is the new part — and can be deleted from AI Studio
+Logs at any time.
 
 ## Usage
 
